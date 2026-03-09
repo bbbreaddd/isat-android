@@ -71,6 +71,7 @@ public class OmoWebView extends WebView {
 
         setLayerType(View.LAYER_TYPE_HARDWARE, null);
         setKeepScreenOn(true);
+        setHapticFeedbackEnabled(false);
 
         setOverScrollMode(OVER_SCROLL_NEVER);
 
