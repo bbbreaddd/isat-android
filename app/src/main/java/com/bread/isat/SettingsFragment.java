@@ -17,7 +17,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -47,6 +46,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private ActivityResultLauncher<String> mRequestPermission;
 
     private Activity mActivity;
+    private boolean mPendingDirectoryIntent = false;
 
     public void setOnPreferencesUpdateListener(OnPreferencesUpdateListener listener) {
         mListener = listener;
@@ -93,9 +93,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mRequestPermission = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
             if (!granted) {
                 Toast.makeText(mActivity, "Storage permission is required", Toast.LENGTH_LONG).show();
+            } else if (mPendingDirectoryIntent) {
+                mPendingDirectoryIntent = false;
+                mOpenDocumentTree.launch(null);
             }
-            Toast.makeText(mActivity, "Restart app now", Toast.LENGTH_LONG).show();
-            mActivity.finishAndRemoveTask();
         });
     }
 
@@ -103,6 +104,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onResume() {
         super.onResume();
         updatePreferences(mPreferences);
+
+        if (mPendingDirectoryIntent && checkPermissions(mActivity)) {
+            mPendingDirectoryIntent = false;
+            mOpenDocumentTree.launch(null);
+        }
     }
 
     @Override
@@ -116,8 +122,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         
         if (directoryPreference != null) {
             directoryPreference.setOnPreferenceClickListener(preference -> {
-                if (checkPermissions(mActivity)) mOpenDocumentTree.launch(null);
-                else requestPermissions();
+                if (checkPermissions(mActivity)) {
+                    mOpenDocumentTree.launch(null);
+                } else {
+                    requestPermissions();
+                }
                 return true;
             });
         }
@@ -139,8 +148,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         if (logsClearPreference != null) {
             logsClearPreference.setOnPreferenceClickListener(preference -> {
                 Debug.i().clear(mActivity, true);
-                Toast.makeText(mActivity, "Restart app now", Toast.LENGTH_LONG).show();
-                mActivity.finishAndRemoveTask();
+                Toast.makeText(mActivity, "Logs cleared. A restart is recommended for logging to resume.", Toast.LENGTH_LONG).show();
                 return true;
             });
         }
@@ -172,10 +180,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         boolean filesPermission = checkPermissions(mActivity);
         if (logsPreference != null) {
-            if (!logsPreference.isEnabled() && filesPermission) {
-                Toast.makeText(mActivity, "Restart app now", Toast.LENGTH_LONG).show();
-                mActivity.finishAndRemoveTask();
-            }
             logsPreference.setEnabled(filesPermission);
         }
         
@@ -186,9 +190,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private void requestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Toast.makeText(mActivity, "Allow all files access", Toast.LENGTH_LONG).show();
+            mPendingDirectoryIntent = true;
+            Toast.makeText(mActivity, "Allow all files access and then return to the app", Toast.LENGTH_LONG).show();
             startActivity(new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + BuildConfig.APPLICATION_ID)));
         } else {
+            mPendingDirectoryIntent = true;
             mRequestPermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
