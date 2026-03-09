@@ -2,9 +2,9 @@ Languages: [русский](README_ru.md)
 
 # ISAT for Android
 
-![spacexh_happy](.github/assets/spacexh_happy.png)
+![siffrin](.github/assets/siffrin.webp)
 
-Android WebView + [nwcompat](https://github.com/fifomori/nwcompat)
+Android WebView + [nwcompat](https://github.com/bbbreaddd/nwcompat)
 
 # Prerequisites
 
@@ -12,20 +12,14 @@ Android WebView + [nwcompat](https://github.com/fifomori/nwcompat)
 
 # Installing
 
-1. Get and install APK
-2. Copy `www` folder from your installation to your phone
-3. Run app on your phone for first time and select game directory (step 2)
-4. Now you can run game normally
-
-# OneLoader
-
-To use OneLoader, [install](https://mods.one/mod/oneloader) it to your directory and enable it in settings
-
-![warning](.github/assets/warning.gif) **IMPORTANT**: see [chromori](https://github.com/fifomori/chromori#oneloader-)
+1. Get and install the APK from https://github.com/bbbreaddd/isat-android/releases
+2. Copy the PC version of the Game to your Phone
+3. Run app on your phone for first time and select the game directory
+4. Now you can run the game normally
 
 # Building
 
-1. Build [nwcompat](https://github.com/fifomori/nwcompat)
+1. Build [nwcompat](https://github.com/bbbreaddd/nwcompat)
 2. Build in Android Studio
 
 # Credits
