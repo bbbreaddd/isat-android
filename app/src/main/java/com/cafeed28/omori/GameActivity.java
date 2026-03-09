@@ -2,6 +2,10 @@ package com.cafeed28.omori;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
@@ -12,10 +16,12 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements AudioManager.OnAudioFocusChangeListener {
     private OmoWebView mWebView;
     private Dialog mMenuDialog;
     private Dialog mQuitDialog;
+    private AudioManager mAudioManager;
+    private AudioFocusRequest mFocusRequest;
 
     private void hideSystemUI() {
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
@@ -27,6 +33,8 @@ public class GameActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         mWebView = findViewById(R.id.webView);
         mWebView.setOnCloseWindowListener(this::finishAndRemoveTask);
@@ -102,6 +110,8 @@ public class GameActivity extends Activity {
         super.onResume();
         hideSystemUI();
 
+        requestAudioFocus();
+
         if (mWebView != null) {
             mWebView.resumeTimers();
             mWebView.onResume();
@@ -113,6 +123,8 @@ public class GameActivity extends Activity {
 
     @Override
     protected void onPause() {
+        abandonAudioFocus();
+
         if (mWebView != null) {
             mWebView.eval("window.nw.Window.get().dispatchEvent(new Event('minimize'));");
             mWebView.eval("window.dispatchEvent(new Event('blur'));");
@@ -127,5 +139,40 @@ public class GameActivity extends Activity {
     @Override
     public void onBackPressed() {
         mMenuDialog.show();
+    }
+
+    private void requestAudioFocus() {
+        AudioAttributes playbackAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        mFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(playbackAttributes)
+                .setAcceptsDelayedFocusGain(true)
+                .setOnAudioFocusChangeListener(this)
+                .build();
+        mAudioManager.requestAudioFocus(mFocusRequest);
+    }
+
+    private void abandonAudioFocus() {
+        if (mFocusRequest != null) {
+            mAudioManager.abandonAudioFocusRequest(mFocusRequest);
+        }
+    }
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        if (mWebView == null) return;
+
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+                mWebView.eval("if (window.WebAudio && WebAudio._context) WebAudio._context.resume();");
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS:
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                mWebView.eval("if (window.WebAudio && WebAudio._context) WebAudio._context.suspend();");
+                break;
+        }
     }
 }
