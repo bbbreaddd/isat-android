@@ -1,4 +1,4 @@
-package com.cafeed28.omori;
+package com.bread.isat;
 
 import android.os.Bundle;
 import android.view.ViewGroup;
@@ -66,7 +66,7 @@ public class AchievementsActivity extends AppCompatActivity {
     }
 
     private void loadAchievements(RecyclerView recyclerView) {
-        String directory = PreferenceManager.getDefaultSharedPreferences(this).getString(SettingsFragment.PREFERENCE_DIRECTORY, null);
+        String directory = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.preference_directory), null);
         if (directory == null) {
             Toast.makeText(this, "Game directory not set", Toast.LENGTH_SHORT).show();
             return;

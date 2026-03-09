@@ -1,4 +1,4 @@
-package com.cafeed28.omori;
+package com.bread.isat;
 
 import android.Manifest;
 import android.app.Activity;
@@ -17,17 +17,14 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
-import androidx.appcompat.app.AlertDialog;
 
-import org.json.JSONObject;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     public interface OnPreferencesUpdateListener {

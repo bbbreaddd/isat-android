@@ -1,4 +1,4 @@
-package com.cafeed28.omori;
+package com.bread.isat;
 
 import android.app.Application;
 import android.content.SharedPreferences;

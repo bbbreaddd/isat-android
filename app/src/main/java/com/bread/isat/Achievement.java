@@ -1,4 +1,4 @@
-package com.cafeed28.omori;
+package com.bread.isat;
 
 public class Achievement {
     public String id;

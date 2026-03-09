@@ -1,5 +1,4 @@
-package com.cafeed28.omori;
-
+package com.bread.isat;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
