@@ -103,7 +103,10 @@ public class GameActivity extends Activity {
         hideSystemUI();
 
         if (mWebView != null) {
+            mWebView.resumeTimers();
             mWebView.onResume();
+            mWebView.eval("if (window.WebAudio && WebAudio._context) WebAudio._context.resume();");
+            mWebView.eval("window.dispatchEvent(new Event('focus'));");
             mWebView.eval("window.nw.Window.get().dispatchEvent(new Event('restore'));");
         }
     }
@@ -112,7 +115,10 @@ public class GameActivity extends Activity {
     protected void onPause() {
         if (mWebView != null) {
             mWebView.eval("window.nw.Window.get().dispatchEvent(new Event('minimize'));");
+            mWebView.eval("window.dispatchEvent(new Event('blur'));");
+            mWebView.eval("if (window.WebAudio && WebAudio._context) WebAudio._context.suspend();");
             mWebView.onPause();
+            mWebView.pauseTimers();
         }
 
         super.onPause();
