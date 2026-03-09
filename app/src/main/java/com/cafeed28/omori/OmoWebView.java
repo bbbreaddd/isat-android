@@ -36,8 +36,6 @@ public class OmoWebView extends WebView {
 
     private final String mDataDirectory;
     private final String mGameDirectory;
-    private final String mKey;
-    private final boolean mOneLoader;
 
     public void setOnCloseWindowListener(OnCloseWindowListener l) {
         mOnCloseWindowListener = l;
@@ -65,10 +63,8 @@ public class OmoWebView extends WebView {
         mAssets = context.getAssets();
         mDataDirectory = context.getFilesDir().getPath();
         mGameDirectory = preferences.getString(context.getString(R.string.preference_directory), null);
-        mKey = preferences.getString(context.getString(R.string.preference_key), null);
-        mOneLoader = preferences.getBoolean(context.getString(R.string.preference_oneloader), false);
 
-        addJavascriptInterface(new NwCompat(this, mDataDirectory, mGameDirectory, mKey), NwCompat.INTERFACE);
+        addJavascriptInterface(new NwCompat(this, mDataDirectory, mGameDirectory), NwCompat.INTERFACE);
 
         setWebViewClient(new ViewClient());
         setWebChromeClient(new ChromeClient());
@@ -167,7 +163,7 @@ public class OmoWebView extends WebView {
                 if (!decodedPath.contains("\0")) path = decodedPath;
             }
 
-            return mPathHandler.handle(path, mOneLoader);
+            return mPathHandler.handle(path);
         }
     }
 

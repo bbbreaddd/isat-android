@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">OMORI</string>
+    <string name="app_name">In Stars and Time</string>
 
-    <string name="preference_key">key</string>
     <string name="preference_directory">directory</string>
-    <string name="preference_oneloader">oneloader</string>
     <string name="preference_logs">logs</string>
     <string name="preference_logs_clear">logs_clear</string>
 </resources>

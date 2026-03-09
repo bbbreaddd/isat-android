@@ -23,16 +23,13 @@ public class NwCompat {
     private final WebView mView;
     private final String mDataDirectory;
     private final String mGameDirectory;
-    private final String mKey;
-
     private final Base64.Decoder mDecoder = Base64.getDecoder();
     private final Base64.Encoder mEncoder = Base64.getEncoder();
 
-    public NwCompat(WebView view, String dataDirectory, String gameDirectory, String key) {
+    public NwCompat(WebView view, String dataDirectory, String gameDirectory) {
         mView = view;
         mDataDirectory = dataDirectory;
         mGameDirectory = gameDirectory;
-        mKey = key;
     }
 
     @JavascriptInterface
@@ -71,8 +68,6 @@ public class NwCompat {
             JSONObject result = new JSONObject();
             result.put("dataDirectory", mDataDirectory);
             result.put("gameDirectory", mGameDirectory);
-            result.put("key", mKey);
-
             if (webViewPackage != null) {
                 result.put("webViewPackage", webViewPackage.packageName);
                 result.put("webViewVersion", webViewPackage.versionName);

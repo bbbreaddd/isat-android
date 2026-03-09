@@ -8,17 +8,13 @@ import android.webkit.WebResourceResponse;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NwCompatPathHandler {
@@ -26,12 +22,6 @@ public class NwCompatPathHandler {
 
     private final AssetManager mAssets;
     private final String mDirectory;
-
-    private static final List<String> mOneLoaderBlockList = Arrays.asList(
-            "js/libs/pixi.js",
-            "js/libs/pixi-tilemap.js",
-            "js/libs/pixi-picture.js"
-    );
 
     public NwCompatPathHandler(AssetManager assets, String directory) {
         mAssets = assets;
@@ -90,23 +80,12 @@ public class NwCompatPathHandler {
         return is;
     }
 
-    public WebResourceResponse handle(String path, boolean oneLoader) {
-        boolean block = false;
-        if (oneLoader) {
-            block = mOneLoaderBlockList.contains(path);
-            path = path.replace("index.html", "index-oneloader.html");
-        }
-
-        InputStream is;
-        if (block) {
-            is = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
-        } else {
-            is = handleAsset(path);
-            if (is == null) is = handleGame(path);
-            if (is == null) {
-                Debug.i().log(Log.INFO, "%s: file not found: '%s' ('%s')", TAG, path, mDirectory);
-                return null;
-            }
+    public WebResourceResponse handle(String path) {
+        InputStream is = handleAsset(path);
+        if (is == null) is = handleGame(path);
+        if (is == null) {
+            Debug.i().log(Log.INFO, "%s: file not found: '%s' ('%s')", TAG, path, mDirectory);
+            return null;
         }
 
         Map<String, String> headers = new HashMap<>(2);

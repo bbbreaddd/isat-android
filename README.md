@@ -1,6 +1,6 @@
 Languages: [русский](README_ru.md)
 
-# OMORI for Android
+# ISAT for Android
 
 ![spacexh_happy](.github/assets/spacexh_happy.png)
 
@@ -8,32 +8,18 @@ Android WebView + [nwcompat](https://github.com/fifomori/nwcompat)
 
 # Prerequisites
 
-- [OMORI](https://store.steampowered.com/app/1150690/OMORI)
+- In Stars and Time
 
 # Installing
 
-## [Video tutorial](https://youtu.be/vewM9YLIpB0)
-
 1. Get and install APK
-2. Copy `www` folder from your OMORI installation to your phone
-3. Run app on your phone for first time, select game directory (step 2) and [enter key](#get-a-key)
+2. Copy `www` folder from your installation to your phone
+3. Run app on your phone for first time and select game directory (step 2)
 4. Now you can run game normally
-
-# Get a key
-
-1. Launch OMORI from Steam
-2. Launch cmd (Win+R -> `cmd`)
-3. Paste and run this command
-
-```cmd
-wmic process where caption='OMORI.exe' get commandline | findstr .*--6
-```
-
-4. Key is the string after `--` (not including `--`)
 
 # OneLoader
 
-To use OneLoader, [install](https://mods.one/mod/oneloader) it to your OMORI directory and enable it in settings
+To use OneLoader, [install](https://mods.one/mod/oneloader) it to your directory and enable it in settings
 
 ![warning](.github/assets/warning.gif) **IMPORTANT**: see [chromori](https://github.com/fifomori/chromori#oneloader-)
 
