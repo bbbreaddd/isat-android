@@ -76,6 +76,7 @@ public class NwCompat {
             }
 
             result.put("hostVersion", BuildConfig.VERSION_NAME);
+            result.put("isDebug", BuildConfig.DEBUG);
             return result.toString();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -134,15 +135,16 @@ public class NwCompat {
     }
 
     @JavascriptInterface
-    public void fsWriteFile(String path, byte[] data) {
+    public void fsWriteFile(String path, String base64Data) {
         try {
             var filePath = Paths.get(path);
             if (!filePath.isAbsolute()) {
                 filePath = Paths.get(mGameDirectory, path);
             }
 
+            var data = mDecoder.decode(base64Data);
             Files.write(filePath, data);
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             Debug.i().log(Log.ERROR, e.toString());
             e.printStackTrace();
         }

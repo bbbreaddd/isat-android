@@ -1,4 +1,5 @@
 package com.bread.isat;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -23,7 +24,8 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
     private AudioFocusRequest mFocusRequest;
 
     private void hideSystemUI() {
-        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(),
+                getWindow().getDecorView());
         controller.hide(WindowInsetsCompat.Type.systemBars());
         controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
     }
@@ -43,8 +45,8 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
 
             // i fucking hate android
-            if (insets.left > 0) mlp.leftMargin = insets.left;
-            else if (insets.right > 0) mlp.rightMargin = insets.right;
+            mlp.leftMargin = insets.left;
+            mlp.rightMargin = insets.right;
 
             v.setLayoutParams(mlp);
 
@@ -53,7 +55,8 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
 
         mWebView.start();
 
-        final CharSequence[] menuItems = new CharSequence[] {"Toggle FPS counter", "Toggle touch input", "Edit controls", "Quit game"};
+        final CharSequence[] menuItems = new CharSequence[] { "Toggle FPS counter", "Toggle touch input",
+                "Edit controls", "Quit game" };
 
         mMenuDialog = new AlertDialog.Builder(this)
                 .setTitle("Menu")
@@ -161,7 +164,8 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
 
     @Override
     public void onAudioFocusChange(int focusChange) {
-        if (mWebView == null) return;
+        if (mWebView == null)
+            return;
 
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_GAIN:
