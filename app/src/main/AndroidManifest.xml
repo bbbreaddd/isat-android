@@ -15,11 +15,11 @@
         android:hardwareAccelerated="true"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/Theme.OMORI"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,6 +33,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".AchievementsActivity"
+            android:exported="false"
+            android:label="Achievements" />
     </application>
 
 </manifest>

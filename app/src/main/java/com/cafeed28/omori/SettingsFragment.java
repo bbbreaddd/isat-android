@@ -20,9 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.appcompat.app.AlertDialog;
 
+import org.json.JSONObject;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     public interface OnPreferencesUpdateListener {
@@ -36,6 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     };
 
     public static String PREFERENCE_DIRECTORY;
+    public static String PREFERENCE_ACHIEVEMENTS;
     public static String PREFERENCE_LOGS;
     public static String PREFERENCE_LOGS_CLEAR;
 
@@ -55,6 +61,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mActivity = getActivity();
 
         PREFERENCE_DIRECTORY = getString(R.string.preference_directory);
+        PREFERENCE_ACHIEVEMENTS = getString(R.string.preference_achievements);
         PREFERENCE_LOGS = getString(R.string.preference_logs);
         PREFERENCE_LOGS_CLEAR = getString(R.string.preference_logs_clear);
 
@@ -106,6 +113,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
         Preference directoryPreference = findPreference(PREFERENCE_DIRECTORY);
+        Preference achievementsPreference = findPreference(PREFERENCE_ACHIEVEMENTS);
         Preference logsPreference = findPreference(PREFERENCE_LOGS);
         Preference logsClearPreference = findPreference(PREFERENCE_LOGS_CLEAR);
         
@@ -113,6 +121,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             directoryPreference.setOnPreferenceClickListener(preference -> {
                 if (checkPermissions(mActivity)) mOpenDocumentTree.launch(null);
                 else requestPermissions();
+                return true;
+            });
+        }
+
+        if (achievementsPreference != null) {
+            achievementsPreference.setOnPreferenceClickListener(preference -> {
+                showAchievementsDialog();
                 return true;
             });
         }
@@ -136,13 +151,24 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         updatePreferences(mPreferences);
     }
 
+    private void showAchievementsDialog() {
+        startActivity(new Intent(mActivity, AchievementsActivity.class));
+    }
+
     private void updatePreferences(SharedPreferences preferences) {
         if (mListener != null) mListener.onPreferencesUpdate(preferences);
 
         Preference directoryPreference = findPreference(PREFERENCE_DIRECTORY);
+        Preference achievementsPreference = findPreference(PREFERENCE_ACHIEVEMENTS);
         Preference logsPreference = findPreference(PREFERENCE_LOGS);
         Preference logsClearPreference = findPreference(PREFERENCE_LOGS_CLEAR);
         
+        if (achievementsPreference != null) {
+            String dir = preferences.getString(PREFERENCE_DIRECTORY, null);
+            achievementsPreference.setVisible(isInStarsAndTime(dir));
+            achievementsPreference.setEnabled(canPlay(mActivity, preferences));
+        }
+
         if (directoryPreference != null) {
             directoryPreference.setSummary(String.format("Current: %s", preferences.getString(PREFERENCE_DIRECTORY, "not set")));
         }
@@ -181,5 +207,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public boolean canPlay(Context context, SharedPreferences preferences) {
         String directory = preferences.getString(SettingsFragment.PREFERENCE_DIRECTORY, null);
         return directory != null && !directory.isEmpty() && checkPermissions(context);
+    }
+
+    private boolean isInStarsAndTime(String directory) {
+        if (directory == null || directory.isEmpty()) return false;
+        try {
+            File indexFile = new File(directory, "index.html");
+            if (indexFile.exists()) {
+                String content = new String(Files.readAllBytes(Paths.get(indexFile.getAbsolutePath())));
+                return content.toLowerCase().contains("in stars and time");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

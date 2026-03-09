@@ -4,6 +4,9 @@
         <Preference
             android:key="@string/preference_directory"
             android:title="Select installation directory" />
+        <Preference
+            android:key="@string/preference_achievements"
+            android:title="Achievements" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Debug">
         <Preference

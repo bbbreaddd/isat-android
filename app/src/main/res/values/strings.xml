@@ -3,6 +3,7 @@
     <string name="app_name">In Stars and Time</string>
 
     <string name="preference_directory">directory</string>
+    <string name="preference_achievements">achievements</string>
     <string name="preference_logs">logs</string>
     <string name="preference_logs_clear">logs_clear</string>
 </resources>
