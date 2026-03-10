@@ -1,35 +1,40 @@
 Языки: [English](README.md)
 
-# ISAT для Android
+# In Stars and Time (Android Port)
 
-![spacexh_happy](.github/assets/spacexh_happy.png)
+![siffrin](.github/assets/siffrin.webp)
 
-Android WebView + [nwcompat](https://github.com/fifomori/nwcompat)
+Неофициальная Android-оболочка для игры **In Stars and Time**, работающая на базе Android WebView и [nwcompat](https://github.com/bbbreaddd/nwcompat).
 
-# Предварительные условия
+## Предварительные условия
 
-- In Stars and Time
+- Лицензионная копия **In Stars and Time** (версия для ПК).
+- Устройство на Android 8.0 или выше.
 
-# Установка
+## Установка
 
-1. Скачайте и установите APK
-2. Скопируйте на телефон папку `www` из вашей установки игры
-3. Запустите приложение в первый раз и выберите папку установки (из пункта 2)
-4. Теперь вы можете запускать игру как обычно
+1. Загрузите последнюю версию со страницы [Releases](https://github.com/bbbreaddd/isat-android/releases).
+2. Скопируйте всю папку с игрой с вашего ПК на телефон.
+3. Запустите приложение. Оно предложит вам выбрать директорию, в которую вы скопировали файлы игры.
+4. Как только папка будет выбрана, нажмите Play.
 
-# OneLoader
+## Сборка из исходного кода
 
-Чтобы использовать OneLoader, [установите](https://mods.one/mod/oneloader) его в вашу папку игры и включите его в настройках
+Если вы хотите собрать проект самостоятельно:
+1. Склонируйте этот репозиторий.
+2. Убедитесь, что у вас настроена зависимость [nwcompat](https://github.com/bbbreaddd/nwcompat).
+3. Откройте проект в **Android Studio**.
+4. Соберите и запустите.
 
-![warning](.github/assets/warning.gif) **ВАЖНО**: ознакомьтесь с [chromori](https://github.com/fifomori/chromori#oneloader-)
+## FAQ
 
-# Сборка
+### Где хранятся сохранения?
+Сохранения хранятся непосредственно в выбранной вами папке с игрой (`www/saves`), как и на ПК. Удаление приложения **не удалит** ваши сохранения.
 
-1. Соберите [nwcompat](https://github.com/fifomori/nwcompat)
-2. Соберите в Android Studio
+### Мои достижения не отображаются?
+Достижения отслеживаются локально внутри этого Android-порта. Если вы импортируете сохранение с ПК, ранее разблокированные достижения не будут автоматически синхронизированы, но вы все равно сможете открывать новые.
 
-# Авторы
+## 📜 Авторы
 
-- Кнопки геймпада на экране сделаны с использованием [Xelu's FREE Controller Prompts](https://thoseawesomeguys.com/prompts/) и оптимизированы с помощью инструмента из [этого ответа на stackoverflow](https://stackoverflow.com/a/74330757/22076815)
-
-- Дополнительно в [nwcompat](https://github.com/fifomori/nwcompat#credits)
+- **Совместимость**: Работает на базе [nwcompat](https://github.com/bbbreaddd/nwcompat).
+- **Игра**: *In Stars and Time* разработана insertdisc5. Пожалуйста, поддержите оригинального разработчика!

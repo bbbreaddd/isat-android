@@ -1,29 +1,40 @@
-Languages: [русский](README_ru.md)
+Languages: [Русский](README_ru.md)
 
-# ISAT for Android
+# In Stars and Time (Android Port)
 
 ![siffrin](.github/assets/siffrin.webp)
 
-Android WebView + [nwcompat](https://github.com/bbbreaddd/nwcompat)
+An unofficial Android wrapper for the game **In Stars and Time**, powered by Android WebView and [nwcompat](https://github.com/bbbreaddd/nwcompat).
 
-# Prerequisites
+## Prerequisites
 
-- In Stars and Time
+- A legal copy of **In Stars and Time** (PC version).
+- An Android device running Android 8.0 or higher.
 
-# Installing
+## Installation
 
-1. Get and install the APK from https://github.com/bbbreaddd/isat-android/releases
-2. Copy the PC version of the Game to your Phone
-3. Run app on your phone for first time and select the game directory
-4. Now you can run the game normally
+1. Get the latest release from the [Releases](https://github.com/bbbreaddd/isat-android/releases) page.
+2. Copy the entire game folder from your PC to your phone.
+3. Launch the app. It will ask you to select the directory where you copied the game files.
+4. Once the directory is selected, press Play.
 
-# Building
+## Building from Source
 
-1. Build [nwcompat](https://github.com/bbbreaddd/nwcompat)
-2. Build in Android Studio
+If you want to build the project yourself:
+1. Clone this repository.
+2. Ensure you have the [nwcompat](https://github.com/bbbreaddd/nwcompat) dependency set up.
+3. Open the project in **Android Studio**.
+4. Build and run.
 
-# Credits
+## FAQ
 
-- Onscreen gamepad buttons are made using [Xelu's FREE Controller Prompts](https://thoseawesomeguys.com/prompts/) and optimized using a tool from [this stackoverflow answer](https://stackoverflow.com/a/74330757/22076815)
+### Where are the saves stored?
+Saves are stored directly in the game folder you selected (`www/saves`), just like on PC. Uninstalling the app **will not** delete your save files.
 
-- For more credits see [nwcompat](https://github.com/fifomori/nwcompat#credits)
+### My achievements aren't showing?
+Achievements are tracked locally within this Android port. If you import a save from PC, previously unlocked achievements won't automatically sync, but you can still unlock new ones.
+
+## 📜 Credits
+
+- **Core Compatibility**: Powered by [nwcompat](https://github.com/bbbreaddd/nwcompat).
+- **Game**: *In Stars and Time* is developed by insertdisc5. Please support the original developer!
