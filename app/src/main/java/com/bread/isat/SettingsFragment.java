@@ -40,6 +40,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static String PREFERENCE_ACHIEVEMENTS;
     public static String PREFERENCE_LOGS;
     public static String PREFERENCE_LOGS_CLEAR;
+    public static String PREFERENCE_BORDERS;
 
     private SharedPreferences mPreferences;
     private ActivityResultLauncher<Uri> mOpenDocumentTree;
@@ -61,6 +62,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         PREFERENCE_ACHIEVEMENTS = getString(R.string.preference_achievements);
         PREFERENCE_LOGS = getString(R.string.preference_logs);
         PREFERENCE_LOGS_CLEAR = getString(R.string.preference_logs_clear);
+        PREFERENCE_BORDERS = getString(R.string.preference_borders);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         mPreferences.registerOnSharedPreferenceChangeListener(prefListener);
@@ -167,11 +169,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference achievementsPreference = findPreference(PREFERENCE_ACHIEVEMENTS);
         Preference logsPreference = findPreference(PREFERENCE_LOGS);
         Preference logsClearPreference = findPreference(PREFERENCE_LOGS_CLEAR);
+        Preference bordersPreference = findPreference(PREFERENCE_BORDERS);
         
+        String dir = preferences.getString(PREFERENCE_DIRECTORY, null);
+        boolean isISAT = isInStarsAndTime(dir);
+
         if (achievementsPreference != null) {
-            String dir = preferences.getString(PREFERENCE_DIRECTORY, null);
-            achievementsPreference.setVisible(isInStarsAndTime(dir));
+            achievementsPreference.setVisible(isISAT);
             achievementsPreference.setEnabled(canPlay(mActivity, preferences));
+        }
+
+        if (bordersPreference != null) {
+            bordersPreference.setVisible(isISAT);
         }
 
         if (directoryPreference != null) {

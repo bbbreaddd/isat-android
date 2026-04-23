@@ -6,4 +6,7 @@
     <string name="preference_achievements">achievements</string>
     <string name="preference_logs">logs</string>
     <string name="preference_logs_clear">logs_clear</string>
+    <string name="preference_borders">borders</string>
+    <string name="preference_borders_title">Widescreen Border</string>
+    <string name="preference_borders_summary">Show border</string>
 </resources>

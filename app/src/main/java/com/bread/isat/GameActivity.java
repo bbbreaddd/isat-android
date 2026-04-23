@@ -56,7 +56,7 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
         mWebView.start();
 
         final CharSequence[] menuItems = new CharSequence[] { "Toggle FPS counter", "Toggle touch input",
-                "Edit controls", "Quit game" };
+                "Edit controls", "Toggle widescreen border", "Quit game" };
 
         mMenuDialog = new AlertDialog.Builder(this)
                 .setTitle("Menu")
@@ -71,7 +71,10 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
                         case 2: // Edit controls
                             mWebView.eval("Input._editControls();");
                             break;
-                        case 3: // Quit game
+                        case 3: // Toggle widescreen border
+                            mWebView.eval("nwcompat._toggleBorders();");
+                            break;
+                        case 4: // Quit game
                             mQuitDialog.show();
                             break;
                     }

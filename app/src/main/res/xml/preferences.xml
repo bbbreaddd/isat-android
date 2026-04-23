@@ -4,6 +4,11 @@
         <Preference
             android:key="@string/preference_directory"
             android:title="Select installation directory" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/preference_borders"
+            android:summary="@string/preference_borders_summary"
+            android:title="@string/preference_borders_title" />
         <Preference
             android:key="@string/preference_achievements"
             android:title="Achievements" />

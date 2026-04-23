@@ -3,6 +3,8 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
+import androidx.preference.PreferenceManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,6 +64,8 @@ public class NwCompat {
     @JavascriptInterface
     public String getNativeInfo() {
         var webViewPackage = WebView.getCurrentWebViewPackage();
+        var context = mView.getContext();
+        var prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         try {
             JSONObject result = new JSONObject();
@@ -77,11 +81,29 @@ public class NwCompat {
 
             result.put("hostVersion", BuildConfig.VERSION_NAME);
             result.put("isDebug", BuildConfig.DEBUG);
+
+            // Settings
+            JSONObject settings = new JSONObject();
+            settings.put("borders", prefs.getBoolean(context.getString(R.string.preference_borders), true));
+            result.put("settings", settings);
+
             return result.toString();
         } catch (JSONException e) {
             e.printStackTrace();
             return "{}";
         }
+    }
+
+    @JavascriptInterface
+    public void setPreference(String key, boolean value) {
+        var context = mView.getContext();
+        var prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        
+        // Map common keys to string resources if needed, or just use literal keys
+        String prefKey = key;
+        if (key.equals("borders")) prefKey = context.getString(R.string.preference_borders);
+        
+        prefs.edit().putBoolean(prefKey, value).apply();
     }
 
     /**
