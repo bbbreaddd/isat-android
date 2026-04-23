@@ -33,3 +33,4 @@ google-services.json
 *.hprof
 
 app/src/main/assets/*
+!app/src/main/assets/1677310.db.txt
