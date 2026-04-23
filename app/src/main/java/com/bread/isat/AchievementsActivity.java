@@ -105,6 +105,11 @@ public class AchievementsActivity extends AppCompatActivity {
             for (int i = 0; i < achievementList.length(); i++) {
                 JSONObject ach = achievementList.getJSONObject(i);
                 String id = ach.getString("name");
+                
+                if (!BuildConfig.DEBUG && id.equals("TEST_ACHIEVEMENT")) {
+                    continue;
+                }
+                
                 String title = ach.getString("displayName");
                 String description = ach.getString("description");
                 String iconUrl = ach.getString("icon");
