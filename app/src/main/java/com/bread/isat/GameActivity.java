@@ -6,9 +6,13 @@ import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.WebView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.Insets;
@@ -24,9 +28,15 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
     private AudioManager mAudioManager;
     private AudioFocusRequest mFocusRequest;
 
-    private void hideSystemUI() {
-        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(),
-                getWindow().getDecorView());
+    private void setupEdgeToEdge() {
+        Window window = getWindow();
+        WindowCompat.setDecorFitsSystemWindows(window, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+        }
+
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(window, window.getDecorView());
         controller.hide(WindowInsetsCompat.Type.systemBars());
         controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
     }
@@ -34,23 +44,21 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupEdgeToEdge();
         setContentView(R.layout.activity_game);
+
+        if (BuildConfig.DEBUG) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         mWebView = findViewById(R.id.webView);
         mWebView.setOnCloseWindowListener(this::finishAndRemoveTask);
-
         ViewCompat.setOnApplyWindowInsetsListener(mWebView, (v, windowInsets) -> {
-            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout());
-            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-
-            // i fucking hate android
-            mlp.leftMargin = insets.left;
-            mlp.rightMargin = insets.right;
-
-            v.setLayoutParams(mlp);
-
+            Insets insets = windowInsets
+                    .getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
 
@@ -114,7 +122,7 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
     @Override
     protected void onResume() {
         super.onResume();
-        hideSystemUI();
+        setupEdgeToEdge();
 
         requestAudioFocus();
 
@@ -123,7 +131,8 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
             mWebView.onResume();
             mWebView.eval("if (window.WebAudio && WebAudio._context) WebAudio._context.resume();");
             mWebView.eval("window.dispatchEvent(new Event('focus'));");
-            mWebView.eval("if (window.nw && window.nw.Window) window.nw.Window.get().dispatchEvent(new Event('restore'));");
+            mWebView.eval(
+                    "if (window.nw && window.nw.Window) window.nw.Window.get().dispatchEvent(new Event('restore'));");
         }
     }
 
@@ -132,7 +141,8 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
         abandonAudioFocus();
 
         if (mWebView != null) {
-            mWebView.eval("if (window.nw && window.nw.Window) window.nw.Window.get().dispatchEvent(new Event('minimize'));");
+            mWebView.eval(
+                    "if (window.nw && window.nw.Window) window.nw.Window.get().dispatchEvent(new Event('minimize'));");
             mWebView.eval("window.dispatchEvent(new Event('blur'));");
             mWebView.eval("if (window.WebAudio && WebAudio._context) WebAudio._context.suspend();");
             mWebView.onPause();
@@ -149,9 +159,9 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
 
         if (action == KeyEvent.ACTION_DOWN) {
             // ONLY Select, Menu, and Mode (Xbox button) open the menu
-            if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || 
-                keyCode == KeyEvent.KEYCODE_MENU ||
-                keyCode == KeyEvent.KEYCODE_BUTTON_MODE) {
+            if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT ||
+                    keyCode == KeyEvent.KEYCODE_MENU ||
+                    keyCode == KeyEvent.KEYCODE_BUTTON_MODE) {
                 mMenuDialog.show();
                 return true;
             }
