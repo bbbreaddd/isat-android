@@ -67,5 +67,31 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, GameActivity.class));
             finish();
         });
+
+        // Precache achievement icons over the network in the background
+        new Thread(() -> {
+            try (java.io.InputStream is = getAssets().open("1677310.db.txt");
+                 java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
+                
+                String content = reader.lines().collect(java.util.stream.Collectors.joining("\n"));
+                org.json.JSONObject dbJson = new org.json.JSONObject(content);
+                org.json.JSONArray achievementList = dbJson.getJSONObject("achievement").getJSONArray("list");
+
+                for (int i = 0; i < achievementList.length(); i++) {
+                    org.json.JSONObject ach = achievementList.getJSONObject(i);
+                    String iconUrl = ach.optString("icon", null);
+                    String iconGrayUrl = ach.optString("icongray", null);
+
+                    if (iconUrl != null && iconUrl.startsWith("http")) {
+                        com.bumptech.glide.Glide.with(getApplicationContext()).downloadOnly().load(iconUrl).submit();
+                    }
+                    if (iconGrayUrl != null && iconGrayUrl.startsWith("http")) {
+                        com.bumptech.glide.Glide.with(getApplicationContext()).downloadOnly().load(iconGrayUrl).submit();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
