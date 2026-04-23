@@ -7,6 +7,7 @@ import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AlertDialog;
@@ -122,7 +123,7 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
             mWebView.onResume();
             mWebView.eval("if (window.WebAudio && WebAudio._context) WebAudio._context.resume();");
             mWebView.eval("window.dispatchEvent(new Event('focus'));");
-            mWebView.eval("window.nw.Window.get().dispatchEvent(new Event('restore'));");
+            mWebView.eval("if (window.nw && window.nw.Window) window.nw.Window.get().dispatchEvent(new Event('restore'));");
         }
     }
 
@@ -131,7 +132,7 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
         abandonAudioFocus();
 
         if (mWebView != null) {
-            mWebView.eval("window.nw.Window.get().dispatchEvent(new Event('minimize'));");
+            mWebView.eval("if (window.nw && window.nw.Window) window.nw.Window.get().dispatchEvent(new Event('minimize'));");
             mWebView.eval("window.dispatchEvent(new Event('blur'));");
             mWebView.eval("if (window.WebAudio && WebAudio._context) WebAudio._context.suspend();");
             mWebView.onPause();
@@ -139,6 +140,24 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
         }
 
         super.onPause();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        int action = event.getAction();
+
+        if (action == KeyEvent.ACTION_DOWN) {
+            // ONLY Select, Menu, and Mode (Xbox button) open the menu
+            if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT || 
+                keyCode == KeyEvent.KEYCODE_MENU ||
+                keyCode == KeyEvent.KEYCODE_BUTTON_MODE) {
+                mMenuDialog.show();
+                return true;
+            }
+        }
+
+        return super.dispatchKeyEvent(event);
     }
 
     @Override
