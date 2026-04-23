@@ -28,7 +28,7 @@
         </activity>
         <activity
             android:name=".GameActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout|density|locale|layoutDirection|fontScale|uiMode|keyboard|navigation|mcc|mnc|touchscreen"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="sensorLandscape"
