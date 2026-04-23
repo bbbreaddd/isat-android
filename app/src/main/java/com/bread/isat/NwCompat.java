@@ -126,11 +126,21 @@ public class NwCompat {
             var bytes = Files.readAllBytes(filePath);
             return mEncoder.encodeToString(bytes);
         } catch (IOException e) {
-            if (!(e instanceof NoSuchFileException)) {
-                Debug.i().log(Log.ERROR, e.toString());
-                e.printStackTrace();
+            try (java.io.InputStream is = mView.getContext().getAssets().open(path)) {
+                java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+                int nRead;
+                byte[] data = new byte[16384];
+                while ((nRead = is.read(data, 0, data.length)) != -1) {
+                    buffer.write(data, 0, nRead);
+                }
+                return mEncoder.encodeToString(buffer.toByteArray());
+            } catch (IOException ex) {
+                if (!(e instanceof NoSuchFileException)) {
+                    Debug.i().log(Log.ERROR, e.toString());
+                    e.printStackTrace();
+                }
+                return null;
             }
-            return null;
         }
     }
 
