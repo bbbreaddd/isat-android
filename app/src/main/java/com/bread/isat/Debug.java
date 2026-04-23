@@ -1,4 +1,5 @@
 package com.bread.isat;
+
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
@@ -18,7 +19,8 @@ public class Debug {
 
     private final DateFormat mDateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
     private final String mInternalFileName;
-    private final String mExternalFileName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/omori.log";
+    private final String mExternalFileName = Environment
+            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/isat.log";
     private final PrintWriter mPrintWriter;
 
     private static Debug mInstance = null;
@@ -39,8 +41,10 @@ public class Debug {
     public void log(int level, String format, Object... args) {
         String logLine;
         try {
-            if (args.length > 0) logLine = String.format(format, args);
-            else logLine = format;
+            if (args.length > 0)
+                logLine = String.format(format, args);
+            else
+                logLine = format;
         } catch (IllegalArgumentException e) {
             logLine = format;
         }

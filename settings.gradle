@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "OMORI"
+rootProject.name = "ISAT-Android"
 include ':app'
