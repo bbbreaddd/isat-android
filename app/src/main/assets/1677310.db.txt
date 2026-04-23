@@ -64,16 +64,16 @@
             {
                 "name": "act3",
                 "displayName": "Encore!",
-                "hidden": 0,
-                "description": "Hidden achievement:  Get to the end.",
+                "hidden": 1,
+                "description": "Get to the end.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/f6ecfe2c2e46d7a3c60e1b1fd2d57418e13d5d82.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "pineappledeath",
                 "displayName": "Best idea you've ever had!",
-                "hidden": 0,
-                "description": "Hidden achievement:  Snack on some pineapple slices.",
+                "hidden": 1,
+                "description": "Snack on some pineapple slices.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/c44586ce0a5394a5116cdf83c2fc47fbf5d2b0de.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
@@ -88,56 +88,56 @@
             {
                 "name": "odilequest_main",
                 "displayName": "Fetch Quest",
-                "hidden": 0,
-                "description": "Hidden achievement:  Hang out with Odile.",
+                "hidden": 1,
+                "description": "Hang out with Odile.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/a6400d2f3709bc622ea20fb5445dfebdf5551d6a.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "miraquest_main",
                 "displayName": "Companion Quest",
-                "hidden": 0,
-                "description": "Hidden achievement:  Hang out with Mirabelle.",
+                "hidden": 1,
+                "description": "Hang out with Mirabelle.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/c74af2caee5e7031f004635120203096dc0719b8.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "bonniequest_main",
                 "displayName": "Tutorial Quest",
-                "hidden": 0,
-                "description": "Hidden achievement:  Hang out with Bonnie.",
+                "hidden": 1,
+                "description": "Hang out with Bonnie.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/8fa8cac70294a615149b4be1fbb57e556e29641f.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "isaquest_main",
                 "displayName": "Really? He doesn't need your help with a quest?",
-                "hidden": 0,
-                "description": "Hidden achievement:  Hang out with Isabeau.",
+                "hidden": 1,
+                "description": "Hang out with Isabeau.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/d2faa65b94dff4ec2cd4e10ed7428605a759cd83.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "sifghost1",
                 "displayName": "Did you see that?",
-                "hidden": 0,
-                "description": "Hidden achievement:  See a ghost.",
+                "hidden": 1,
+                "description": "See a ghost.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/c698c8bd0048ec96893d9ad9406a672b7cb5d5a5.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "friendquest1",
                 "displayName": "In this moment…",
-                "hidden": 0,
-                "description": "Hidden achievement:  Hang out with everyone, and get to the end.",
+                "hidden": 1,
+                "description": "Hang out with everyone, and get to the end.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/ea222ec24b6e59bf8cfb98affec764e3bc1b932e.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "kingquest",
                 "displayName": "Nostalgie",
-                "hidden": 0,
-                "description": "Hidden achievement:  Talk to the King.",
+                "hidden": 1,
+                "description": "Talk to the King.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/096c7e0ec6131a3502935eac055c316dbc9bf703.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
@@ -152,32 +152,32 @@
             {
                 "name": "loopquest",
                 "displayName": "IS THIS IT?",
-                "hidden": 0,
-                "description": "Hidden achievement:  Learn more about the loops.",
+                "hidden": 1,
+                "description": "Learn more about the loops.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/e4ccbd01c478f4440062049926753c6cc4d6d2fd.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "epilogue",
                 "displayName": "Epilogue",
-                "hidden": 0,
-                "description": "Hidden achievement:  Save Vaugarde.",
+                "hidden": 1,
+                "description": "Save Vaugarde.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/ef1d74a9270da3b1ca18423aef81153b25cfabbf.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "ngplus",
                 "displayName": "Aaaaaand SCENE!!!",
-                "hidden": 0,
-                "description": "Hidden achievement:  Get to the end.",
+                "hidden": 1,
+                "description": "Get to the end.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/ff00d540fe6f4677d3757cbcff8eb7272279cfdf.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },
             {
                 "name": "hhm5times",
                 "displayName": "Your favorite play",
-                "hidden": 0,
-                "description": "Hidden achievement:  Get to the end 5 times.",
+                "hidden": 1,
+                "description": "Get to the end 5 times.",
                 "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/436e28a53a7963e5fd1d97223ae0b074639c4d3a.jpg",
                 "icongray": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1677310/3f19e1218f3147cd73f8a7649422d3dc21956208.jpg"
             },

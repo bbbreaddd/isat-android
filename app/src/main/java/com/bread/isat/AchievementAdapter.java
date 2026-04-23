@@ -1,4 +1,5 @@
 package com.bread.isat;
+
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.view.LayoutInflater;
@@ -14,62 +15,94 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class AchievementAdapter extends RecyclerView.Adapter<AchievementAdapter.ViewHolder> {
+public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+
     private final List<Achievement> mAchievements;
+    private boolean mShowHidden = false;
 
     public AchievementAdapter(List<Achievement> achievements) {
         mAchievements = achievements;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position == 0 ? TYPE_HEADER : TYPE_ITEM;
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_HEADER) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_achievement_header, parent,
+                    false);
+            return new HeaderViewHolder(view);
+        }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_achievement, parent, false);
-        return new ViewHolder(view);
+        return new ItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Achievement achievement = mAchievements.get(position);
-
-        boolean showContent = !achievement.isHidden || achievement.isUnlocked;
-
-        if (showContent) {
-            holder.title.setText(achievement.title);
-            holder.description.setText(achievement.description);
-            Glide.with(holder.itemView.getContext())
-                    .load(achievement.isUnlocked ? achievement.iconUrl : achievement.iconGrayUrl)
-                    .into(holder.icon);
-        } else {
-            holder.title.setText("Hidden Achievement");
-            holder.description.setText("Explore to unlock this hidden achievement.");
-            Glide.with(holder.itemView.getContext())
-                    .load(achievement.iconGrayUrl)
-                    .into(holder.icon);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) == TYPE_HEADER) {
+            HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
+            headerHolder.btnToggle.setText(mShowHidden ? "Hide Hidden Achievements" : "Show Hidden Achievements");
+            headerHolder.btnToggle.setOnClickListener(v -> {
+                mShowHidden = !mShowHidden;
+                notifyDataSetChanged();
+            });
+            return;
         }
+
+        ItemViewHolder itemHolder = (ItemViewHolder) holder;
+        Achievement achievement = mAchievements.get(position - 1);
+
+        boolean showDesc = !achievement.isHidden || achievement.isUnlocked || mShowHidden;
+
+        itemHolder.title.setText(achievement.title);
+
+        if (showDesc) {
+            itemHolder.description.setText(achievement.description);
+        } else {
+            itemHolder.description.setText("Hidden Achievement");
+        }
+
+        Glide.with(itemHolder.itemView.getContext())
+                .load(achievement.isUnlocked ? achievement.iconUrl : achievement.iconGrayUrl)
+                .into(itemHolder.icon);
 
         if (!achievement.isUnlocked) {
             ColorMatrix matrix = new ColorMatrix();
             matrix.setSaturation(0);
-            holder.icon.setColorFilter(new ColorMatrixColorFilter(matrix));
-            holder.itemView.setAlpha(0.7f);
+            itemHolder.icon.setColorFilter(new ColorMatrixColorFilter(matrix));
+            itemHolder.itemView.setAlpha(0.7f);
         } else {
-            holder.icon.clearColorFilter();
-            holder.itemView.setAlpha(1.0f);
+            itemHolder.icon.clearColorFilter();
+            itemHolder.itemView.setAlpha(1.0f);
         }
     }
 
     @Override
     public int getItemCount() {
-        return mAchievements.size();
+        return mAchievements.size() + 1;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
+        android.widget.Button btnToggle;
+
+        HeaderViewHolder(View view) {
+            super(view);
+            btnToggle = view.findViewById(R.id.btn_toggle_hidden);
+        }
+    }
+
+    static class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView icon;
         TextView title;
         TextView description;
 
-        ViewHolder(View view) {
+        ItemViewHolder(View view) {
             super(view);
             icon = view.findViewById(R.id.achievement_icon);
             title = view.findViewById(R.id.achievement_title);

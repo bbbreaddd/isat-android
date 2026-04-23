@@ -66,7 +66,8 @@ public class AchievementsActivity extends AppCompatActivity {
     }
 
     private void loadAchievements(RecyclerView recyclerView) {
-        String directory = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.preference_directory), null);
+        String directory = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(getString(R.string.preference_directory), null);
         if (directory == null) {
             Toast.makeText(this, "Game directory not set", Toast.LENGTH_SHORT).show();
             return;
@@ -85,7 +86,8 @@ public class AchievementsActivity extends AppCompatActivity {
                     String content = new String(Files.readAllBytes(saveFile.toPath()), StandardCharsets.UTF_8);
                     JSONObject json = new JSONObject(content);
                     unlockedAchievements = json.optJSONObject("achievements");
-                    if (unlockedAchievements != null) break;
+                    if (unlockedAchievements != null)
+                        break;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -93,8 +95,8 @@ public class AchievementsActivity extends AppCompatActivity {
         }
 
         try (InputStream is = getAssets().open("1677310.db.txt");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-            
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+
             String content = reader.lines().collect(Collectors.joining("\n"));
             JSONObject dbJson = new JSONObject(content);
             JSONArray achievementList = dbJson.getJSONObject("achievement").getJSONArray("list");
@@ -105,11 +107,11 @@ public class AchievementsActivity extends AppCompatActivity {
             for (int i = 0; i < achievementList.length(); i++) {
                 JSONObject ach = achievementList.getJSONObject(i);
                 String id = ach.getString("name");
-                
+
                 if (!BuildConfig.DEBUG && id.equals("TEST_ACHIEVEMENT")) {
                     continue;
                 }
-                
+
                 String title = ach.getString("displayName");
                 String description = ach.getString("description");
                 String iconUrl = ach.getString("icon");
@@ -119,30 +121,38 @@ public class AchievementsActivity extends AppCompatActivity {
                 boolean isUnlocked = false;
                 if (unlockedAchievements != null) {
                     Object val = unlockedAchievements.opt(id);
-                    if (val instanceof Boolean) isUnlocked = (Boolean) val;
-                    else if (val instanceof Number) isUnlocked = ((Number) val).intValue() != 0;
-                    else if (val instanceof String) isUnlocked = ((String) val).equalsIgnoreCase("true") || ((String) val).equals("1");
+                    if (val instanceof Boolean)
+                        isUnlocked = (Boolean) val;
+                    else if (val instanceof Number)
+                        isUnlocked = ((Number) val).intValue() != 0;
+                    else if (val instanceof String)
+                        isUnlocked = ((String) val).equalsIgnoreCase("true") || ((String) val).equals("1");
                 }
-                
-                if (isUnlocked) unlockedCount++;
+
+                if (isUnlocked)
+                    unlockedCount++;
 
                 if (iconUrl != null && !iconUrl.startsWith("http") && !iconUrl.startsWith("/")) {
                     File iconFile = new File(directory, iconUrl);
-                    if (iconFile.exists()) iconUrl = iconFile.getAbsolutePath();
+                    if (iconFile.exists())
+                        iconUrl = iconFile.getAbsolutePath();
                 }
                 if (iconGrayUrl != null && !iconGrayUrl.startsWith("http") && !iconGrayUrl.startsWith("/")) {
                     File iconFile = new File(directory, iconGrayUrl);
-                    if (iconFile.exists()) iconGrayUrl = iconFile.getAbsolutePath();
+                    if (iconFile.exists())
+                        iconGrayUrl = iconFile.getAbsolutePath();
                 }
 
                 achievements.add(new Achievement(id, title, description, iconUrl, iconGrayUrl, isHidden, isUnlocked));
             }
 
             if (getSupportActionBar() != null) {
-                getSupportActionBar().setSubtitle(String.format("%d / %d Unlocked", unlockedCount, achievements.size()));
+                getSupportActionBar()
+                        .setSubtitle(String.format("%d / %d Unlocked", unlockedCount, achievements.size()));
             }
 
-            recyclerView.setAdapter(new AchievementAdapter(achievements));
+            AchievementAdapter adapter = new AchievementAdapter(achievements);
+            recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Failed to load achievements: " + e.getMessage(), Toast.LENGTH_SHORT).show();
