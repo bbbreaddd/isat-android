@@ -28,11 +28,11 @@ public class NwCompatPathHandler {
         mDirectory = directory;
     }
 
-    private static String getMimeType(@NonNull String path) {
+    public static String getMimeType(@NonNull String path) {
         int lastIndexOf = path.lastIndexOf(".");
         String extension = "";
         if (lastIndexOf != -1) {
-            extension = path.substring(lastIndexOf).toLowerCase();
+            extension = path.substring(lastIndexOf + 1).toLowerCase();
         }
 
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);

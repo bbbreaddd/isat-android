@@ -20,6 +20,7 @@ import java.util.List;
 
 public class NwCompat {
     public static final String INTERFACE = "nwcompat";
+    private static final java.util.Set<String> ALLOWED_ASYNC_METHODS = java.util.Set.of("fsReadFileAsync");
 
     private final WebView mView;
     private final String mDataDirectory;
@@ -35,6 +36,11 @@ public class NwCompat {
 
     @JavascriptInterface
     public void asyncCall(int id, String methodName, String args) {
+        if (!ALLOWED_ASYNC_METHODS.contains(methodName)) {
+            jsResolve(id, false, "method not allowed: " + methodName);
+            return;
+        }
+
         NwCompat self = this;
 
         new Thread(() -> {
@@ -51,7 +57,7 @@ public class NwCompat {
     }
 
     private void jsResolve(int id, boolean success, String result) {
-        var formattedResult = result == null ? "null" : String.format("\"%s\"", result);
+        var formattedResult = result == null ? "null" : JSONObject.quote(result);
         var code = String.format("nwcompat.async.callback(%d, %b, %s)", id, success, formattedResult);
         Debug.i().log(Log.DEBUG, code);
         mView.post(() -> mView.evaluateJavascript(code, null));
@@ -81,6 +87,7 @@ public class NwCompat {
 
             result.put("hostVersion", BuildConfig.VERSION_NAME);
             result.put("isDebug", BuildConfig.DEBUG);
+            result.put("key", prefs.getString("steam_key", ""));
 
             // Settings
             JSONObject settings = new JSONObject();
@@ -128,13 +135,15 @@ public class NwCompat {
             }
         }
 
-        return String.join(":", list);
+        return String.join("\n", list);
     }
 
     @JavascriptInterface
     public void fsMkDir(String path) {
         File f = new File(path);
-        f.mkdir();
+        if (!f.mkdirs() && !f.isDirectory()) {
+            Debug.i().log(Log.WARN, "fsMkDir: failed to create directory '%s'", path);
+        }
     }
 
     @JavascriptInterface
@@ -185,7 +194,9 @@ public class NwCompat {
     @JavascriptInterface
     public void fsUnlink(String path) {
         try {
-            Files.deleteIfExists(Paths.get(path));
+            var filePath = Paths.get(path);
+            if (!filePath.isAbsolute()) filePath = Paths.get(mGameDirectory, path);
+            Files.deleteIfExists(filePath);
         } catch (IOException e) {
             Debug.i().log(Log.ERROR, e.toString());
             e.printStackTrace();
@@ -195,7 +206,11 @@ public class NwCompat {
     @JavascriptInterface
     public void fsRename(String path, String newPath) {
         try {
-            Files.move(Paths.get(path), Paths.get(newPath));
+            var src = Paths.get(path);
+            var dst = Paths.get(newPath);
+            if (!src.isAbsolute()) src = Paths.get(mGameDirectory, path);
+            if (!dst.isAbsolute()) dst = Paths.get(mGameDirectory, newPath);
+            Files.move(src, dst);
         } catch (IOException e) {
             Debug.i().log(Log.ERROR, e.toString());
             e.printStackTrace();

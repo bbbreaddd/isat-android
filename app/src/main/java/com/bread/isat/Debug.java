@@ -21,7 +21,7 @@ public class Debug {
     private final String mInternalFileName;
     private final String mExternalFileName = Environment
             .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/isat.log";
-    private final PrintWriter mPrintWriter;
+    private PrintWriter mPrintWriter;
 
     private static Debug mInstance = null;
 
@@ -38,7 +38,7 @@ public class Debug {
         mInstance = this;
     }
 
-    public void log(int level, String format, Object... args) {
+    public synchronized void log(int level, String format, Object... args) {
         String logLine;
         try {
             if (args.length > 0)
@@ -82,7 +82,14 @@ public class Debug {
 
     public void clear(Context context, boolean internal) {
         try {
-            Files.deleteIfExists(Paths.get(internal ? mInternalFileName : mExternalFileName));
+            String target = internal ? mInternalFileName : mExternalFileName;
+            Files.deleteIfExists(Paths.get(target));
+            if (internal) {
+                mPrintWriter.close();
+                var fileWriter = new FileWriter(mInternalFileName, false);
+                var bufferedWriter = new BufferedWriter(fileWriter);
+                mPrintWriter = new PrintWriter(bufferedWriter);
+            }
         } catch (IOException e) {
             Toast.makeText(context, "Failed to clear logs, check 'adb logcat' for more info", Toast.LENGTH_LONG).show();
             this.log(Log.ERROR, "Failed to clear logs from '%s'", mInternalFileName);

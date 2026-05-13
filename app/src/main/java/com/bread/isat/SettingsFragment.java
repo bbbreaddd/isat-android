@@ -36,11 +36,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         updatePreferences(preferences);
     };
 
-    public static String PREFERENCE_DIRECTORY;
-    public static String PREFERENCE_ACHIEVEMENTS;
-    public static String PREFERENCE_LOGS;
-    public static String PREFERENCE_LOGS_CLEAR;
-    public static String PREFERENCE_BORDERS;
+    public String PREFERENCE_DIRECTORY;
+    public String PREFERENCE_ACHIEVEMENTS;
+    public String PREFERENCE_LOGS;
+    public String PREFERENCE_LOGS_CLEAR;
+    public String PREFERENCE_BORDERS;
 
     private SharedPreferences mPreferences;
     private ActivityResultLauncher<Uri> mOpenDocumentTree;
@@ -217,7 +217,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     public boolean canPlay(Context context, SharedPreferences preferences) {
-        String directory = preferences.getString(SettingsFragment.PREFERENCE_DIRECTORY, null);
+        String key = PREFERENCE_DIRECTORY != null ? PREFERENCE_DIRECTORY : context.getString(R.string.preference_directory);
+        String directory = preferences.getString(key, null);
         return directory != null && !directory.isEmpty() && checkPermissions(context);
     }
 

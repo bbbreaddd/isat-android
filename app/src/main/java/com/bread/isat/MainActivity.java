@@ -2,6 +2,7 @@ package com.bread.isat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Fatal error: failed to init logging", Toast.LENGTH_LONG).show();
             finish();
+            return;
         }
 
         super.onCreate(savedInstanceState);

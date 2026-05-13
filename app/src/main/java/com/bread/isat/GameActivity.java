@@ -1,6 +1,6 @@
 package com.bread.isat;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.media.AudioAttributes;
@@ -20,8 +20,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.activity.OnBackPressedCallback;
 
-public class GameActivity extends Activity implements AudioManager.OnAudioFocusChangeListener {
+public class GameActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
     private OmoWebView mWebView;
     private Dialog mMenuDialog;
     private Dialog mQuitDialog;
@@ -97,6 +98,13 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
                 .setPositiveButton("Yes", (d, w) -> finishAndRemoveTask())
                 .setNegativeButton("No", (d, w) -> d.cancel())
                 .create();
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                mMenuDialog.show();
+            }
+        });
     }
 
     @Override
@@ -168,11 +176,6 @@ public class GameActivity extends Activity implements AudioManager.OnAudioFocusC
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public void onBackPressed() {
-        mMenuDialog.show();
     }
 
     private void requestAudioFocus() {

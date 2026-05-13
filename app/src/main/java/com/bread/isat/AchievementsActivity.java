@@ -74,11 +74,14 @@ public class AchievementsActivity extends AppCompatActivity {
         }
 
         JSONObject unlockedAchievements = null;
-        File[] possibleSaveFiles = {
-                new File(directory, "save/nwcompat.json"),
-                new File(directory, "www/save/nwcompat.json"),
-                new File(new File(directory).getParentFile(), "save/nwcompat.json")
-        };
+        List<File> possibleSaveFilesList = new ArrayList<>();
+        possibleSaveFilesList.add(new File(directory, "save/nwcompat.json"));
+        possibleSaveFilesList.add(new File(directory, "www/save/nwcompat.json"));
+        File parent = new File(directory).getParentFile();
+        if (parent != null) {
+            possibleSaveFilesList.add(new File(parent, "save/nwcompat.json"));
+        }
+        File[] possibleSaveFiles = possibleSaveFilesList.toArray(new File[0]);
 
         for (File saveFile : possibleSaveFiles) {
             if (saveFile.exists()) {
