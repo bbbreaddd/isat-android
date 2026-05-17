@@ -32,9 +32,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private OnPreferencesUpdateListener mListener;
     private Boolean mIsInStarsAndTime = null;
+    private String mCachedIsInStarsAndTimeDir = null;
 
     private final SharedPreferences.OnSharedPreferenceChangeListener prefListener = (preferences, key) -> {
-        if (PREFERENCE_DIRECTORY != null && PREFERENCE_DIRECTORY.equals(key)) mIsInStarsAndTime = null;
         updatePreferences(preferences);
     };
 
@@ -231,7 +231,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private boolean isInStarsAndTime(String directory) {
-        if (mIsInStarsAndTime != null) return mIsInStarsAndTime;
+        if (mIsInStarsAndTime != null && java.util.Objects.equals(directory, mCachedIsInStarsAndTimeDir))
+            return mIsInStarsAndTime;
         boolean result = false;
         if (directory != null && !directory.isEmpty()) {
             try {
@@ -241,9 +242,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     result = content.toLowerCase().contains("in stars and time");
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Debug.i().log(Log.WARN, "isInStarsAndTime: %s", e);
             }
         }
+        mCachedIsInStarsAndTimeDir = directory;
         mIsInStarsAndTime = result;
         return result;
     }

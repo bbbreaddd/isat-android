@@ -50,7 +50,11 @@ public class AchievementAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             headerHolder.btnToggle.setText(mShowHidden ? "Hide Hidden Achievements" : "Show Hidden Achievements");
             headerHolder.btnToggle.setOnClickListener(v -> {
                 mShowHidden = !mShowHidden;
-                notifyDataSetChanged();
+                headerHolder.btnToggle.setText(mShowHidden ? "Hide Hidden Achievements" : "Show Hidden Achievements");
+                for (int i = 0; i < mAchievements.size(); i++) {
+                    Achievement a = mAchievements.get(i);
+                    if (a.isHidden && !a.isUnlocked) notifyItemChanged(i + 1);
+                }
             });
             return;
         }

@@ -96,7 +96,7 @@ public class NwCompat {
 
             return result.toString();
         } catch (JSONException e) {
-            e.printStackTrace();
+            Debug.i().log(Log.ERROR, e.toString());
             return "{}";
         }
     }
@@ -168,7 +168,6 @@ public class NwCompat {
             } catch (IOException ex) {
                 if (!(e instanceof NoSuchFileException)) {
                     Debug.i().log(Log.ERROR, e.toString());
-                    e.printStackTrace();
                 }
                 return null;
             }
@@ -187,7 +186,6 @@ public class NwCompat {
             Files.write(filePath, data);
         } catch (IllegalArgumentException | IOException e) {
             Debug.i().log(Log.ERROR, e.toString());
-            e.printStackTrace();
         }
     }
 
@@ -199,7 +197,6 @@ public class NwCompat {
             Files.deleteIfExists(filePath);
         } catch (IOException e) {
             Debug.i().log(Log.ERROR, e.toString());
-            e.printStackTrace();
         }
     }
 
@@ -213,7 +210,6 @@ public class NwCompat {
             Files.move(src, dst);
         } catch (IOException e) {
             Debug.i().log(Log.ERROR, e.toString());
-            e.printStackTrace();
         }
     }
 }

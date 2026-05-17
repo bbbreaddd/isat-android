@@ -1,7 +1,12 @@
 package com.bread.isat;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +57,7 @@ public class AchievementsActivity extends AppCompatActivity {
             return windowInsets;
         });
 
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -62,10 +68,10 @@ public class AchievementsActivity extends AppCompatActivity {
             return windowInsets;
         });
 
-        loadAchievements(recyclerView);
+        loadAchievements(progressBar, recyclerView);
     }
 
-    private void loadAchievements(RecyclerView recyclerView) {
+    private void loadAchievements(ProgressBar progressBar, RecyclerView recyclerView) {
         String directory = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString(getString(R.string.preference_directory), null);
         if (directory == null) {
@@ -73,92 +79,101 @@ public class AchievementsActivity extends AppCompatActivity {
             return;
         }
 
-        JSONObject unlockedAchievements = null;
-        List<File> possibleSaveFilesList = new ArrayList<>();
-        possibleSaveFilesList.add(new File(directory, "save/nwcompat.json"));
-        possibleSaveFilesList.add(new File(directory, "www/save/nwcompat.json"));
-        File parent = new File(directory).getParentFile();
-        if (parent != null) {
-            possibleSaveFilesList.add(new File(parent, "save/nwcompat.json"));
-        }
-        File[] possibleSaveFiles = possibleSaveFilesList.toArray(new File[0]);
-
-        for (File saveFile : possibleSaveFiles) {
-            if (saveFile.exists()) {
-                try {
-                    String content = new String(Files.readAllBytes(saveFile.toPath()), StandardCharsets.UTF_8);
-                    JSONObject json = new JSONObject(content);
-                    unlockedAchievements = json.optJSONObject("achievements");
-                    if (unlockedAchievements != null)
-                        break;
-                } catch (Exception e) {
-                    e.printStackTrace();
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        new Thread(() -> {
+            try {
+                JSONObject unlockedAchievements = null;
+                List<File> possibleSaveFilesList = new ArrayList<>();
+                possibleSaveFilesList.add(new File(directory, "save/nwcompat.json"));
+                possibleSaveFilesList.add(new File(directory, "www/save/nwcompat.json"));
+                File parent = new File(directory).getParentFile();
+                if (parent != null) {
+                    possibleSaveFilesList.add(new File(parent, "save/nwcompat.json"));
                 }
+
+                for (File saveFile : possibleSaveFilesList) {
+                    if (saveFile.exists()) {
+                        try {
+                            String content = new String(Files.readAllBytes(saveFile.toPath()), StandardCharsets.UTF_8);
+                            JSONObject json = new JSONObject(content);
+                            unlockedAchievements = json.optJSONObject("achievements");
+                            if (unlockedAchievements != null) break;
+                        } catch (Exception e) {
+                            Debug.i().log(Log.WARN, "Failed to read save file %s: %s", saveFile, e);
+                        }
+                    }
+                }
+
+                final JSONObject finalUnlocked = unlockedAchievements;
+                List<Achievement> achievements = new ArrayList<>();
+                int[] unlockedCount = {0};
+
+                try (InputStream is = getAssets().open("1677310.db.txt");
+                     BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+
+                    String content = reader.lines().collect(Collectors.joining("\n"));
+                    JSONObject dbJson = new JSONObject(content);
+                    JSONArray achievementList = dbJson.getJSONObject("achievement").getJSONArray("list");
+
+                    for (int i = 0; i < achievementList.length(); i++) {
+                        JSONObject ach = achievementList.getJSONObject(i);
+                        String id = ach.getString("name");
+
+                        if (!BuildConfig.DEBUG && id.equals("TEST_ACHIEVEMENT")) continue;
+
+                        String title = ach.getString("displayName");
+                        String description = ach.getString("description");
+                        String iconUrl = ach.getString("icon");
+                        String iconGrayUrl = ach.getString("icongray");
+                        boolean isHidden = ach.optInt("hidden", 0) == 1;
+
+                        boolean isUnlocked = false;
+                        if (finalUnlocked != null) {
+                            Object val = finalUnlocked.opt(id);
+                            if (val instanceof Boolean)
+                                isUnlocked = (Boolean) val;
+                            else if (val instanceof Number)
+                                isUnlocked = ((Number) val).intValue() != 0;
+                            else if (val instanceof String)
+                                isUnlocked = ((String) val).equalsIgnoreCase("true") || ((String) val).equals("1");
+                        }
+
+                        if (isUnlocked) unlockedCount[0]++;
+
+                        if (iconUrl != null && !iconUrl.startsWith("http") && !iconUrl.startsWith("/")) {
+                            File iconFile = new File(directory, iconUrl);
+                            if (iconFile.exists()) iconUrl = iconFile.getAbsolutePath();
+                        }
+                        if (iconGrayUrl != null && !iconGrayUrl.startsWith("http") && !iconGrayUrl.startsWith("/")) {
+                            File iconFile = new File(directory, iconGrayUrl);
+                            if (iconFile.exists()) iconGrayUrl = iconFile.getAbsolutePath();
+                        }
+
+                        achievements.add(new Achievement(id, title, description, iconUrl, iconGrayUrl, isHidden, isUnlocked));
+                    }
+                }
+
+                final List<Achievement> finalAchievements = achievements;
+                final int total = achievements.size();
+                final int unlocked = unlockedCount[0];
+
+                mainHandler.post(() -> {
+                    if (isFinishing()) return;
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setSubtitle(String.format("%d / %d Unlocked", unlocked, total));
+                    }
+                    recyclerView.setAdapter(new AchievementAdapter(finalAchievements));
+                });
+            } catch (Exception e) {
+                Debug.i().log(Log.ERROR, "Failed to load achievements: %s", e);
+                mainHandler.post(() -> {
+                    if (isFinishing()) return;
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, "Failed to load achievements: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
-        }
-
-        try (InputStream is = getAssets().open("1677310.db.txt");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-
-            String content = reader.lines().collect(Collectors.joining("\n"));
-            JSONObject dbJson = new JSONObject(content);
-            JSONArray achievementList = dbJson.getJSONObject("achievement").getJSONArray("list");
-
-            List<Achievement> achievements = new ArrayList<>();
-            int unlockedCount = 0;
-
-            for (int i = 0; i < achievementList.length(); i++) {
-                JSONObject ach = achievementList.getJSONObject(i);
-                String id = ach.getString("name");
-
-                if (!BuildConfig.DEBUG && id.equals("TEST_ACHIEVEMENT")) {
-                    continue;
-                }
-
-                String title = ach.getString("displayName");
-                String description = ach.getString("description");
-                String iconUrl = ach.getString("icon");
-                String iconGrayUrl = ach.getString("icongray");
-                boolean isHidden = ach.optInt("hidden", 0) == 1;
-
-                boolean isUnlocked = false;
-                if (unlockedAchievements != null) {
-                    Object val = unlockedAchievements.opt(id);
-                    if (val instanceof Boolean)
-                        isUnlocked = (Boolean) val;
-                    else if (val instanceof Number)
-                        isUnlocked = ((Number) val).intValue() != 0;
-                    else if (val instanceof String)
-                        isUnlocked = ((String) val).equalsIgnoreCase("true") || ((String) val).equals("1");
-                }
-
-                if (isUnlocked)
-                    unlockedCount++;
-
-                if (iconUrl != null && !iconUrl.startsWith("http") && !iconUrl.startsWith("/")) {
-                    File iconFile = new File(directory, iconUrl);
-                    if (iconFile.exists())
-                        iconUrl = iconFile.getAbsolutePath();
-                }
-                if (iconGrayUrl != null && !iconGrayUrl.startsWith("http") && !iconGrayUrl.startsWith("/")) {
-                    File iconFile = new File(directory, iconGrayUrl);
-                    if (iconFile.exists())
-                        iconGrayUrl = iconFile.getAbsolutePath();
-                }
-
-                achievements.add(new Achievement(id, title, description, iconUrl, iconGrayUrl, isHidden, isUnlocked));
-            }
-
-            if (getSupportActionBar() != null) {
-                getSupportActionBar()
-                        .setSubtitle(String.format("%d / %d Unlocked", unlockedCount, achievements.size()));
-            }
-
-            AchievementAdapter adapter = new AchievementAdapter(achievements);
-            recyclerView.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Failed to load achievements: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        }).start();
     }
 }

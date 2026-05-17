@@ -2,6 +2,7 @@ package com.bread.isat;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
+import android.util.Log;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
@@ -120,7 +121,7 @@ public class GameActivity extends AppCompatActivity implements AudioManager.OnAu
                 mWebView.destroy();
                 mWebView = null;
             } catch (Exception e) {
-                e.printStackTrace();
+                Debug.i().log(Log.ERROR, "WebView teardown: %s", e);
             }
         }
 

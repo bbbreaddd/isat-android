@@ -45,7 +45,6 @@ public class NwCompatPathHandler {
         } catch (IOException e) {
             if (!(e instanceof NoSuchFileException)) {
                 Debug.i().log(Log.ERROR, e.toString());
-                e.printStackTrace();
             }
         }
         return null;
@@ -61,7 +60,6 @@ public class NwCompatPathHandler {
             } catch (IOException e) {
                 if (!(e instanceof NoSuchFileException)) {
                     Debug.i().log(Log.ERROR, e.toString());
-                    e.printStackTrace();
                 }
             }
         }
@@ -72,7 +70,6 @@ public class NwCompatPathHandler {
             } catch (IOException e) {
                 if (!(e instanceof FileNotFoundException)) {
                     Debug.i().log(Log.ERROR, e.toString());
-                    e.printStackTrace();
                 }
             }
         }

@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Debug.i().log(Log.WARN, "Achievement icon precache: %s", e);
             }
         }).start();
     }
