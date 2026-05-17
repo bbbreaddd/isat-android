@@ -31,8 +31,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private OnPreferencesUpdateListener mListener;
+    private Boolean mIsInStarsAndTime = null;
 
     private final SharedPreferences.OnSharedPreferenceChangeListener prefListener = (preferences, key) -> {
+        if (PREFERENCE_DIRECTORY != null && PREFERENCE_DIRECTORY.equals(key)) mIsInStarsAndTime = null;
         updatePreferences(preferences);
     };
 
@@ -100,6 +102,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 mOpenDocumentTree.launch(null);
             }
         });
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mPreferences.unregisterOnSharedPreferenceChangeListener(prefListener);
     }
 
     @Override
@@ -223,16 +231,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private boolean isInStarsAndTime(String directory) {
-        if (directory == null || directory.isEmpty()) return false;
-        try {
-            File indexFile = new File(directory, "index.html");
-            if (indexFile.exists()) {
-                String content = new String(Files.readAllBytes(Paths.get(indexFile.getAbsolutePath())));
-                return content.toLowerCase().contains("in stars and time");
+        if (mIsInStarsAndTime != null) return mIsInStarsAndTime;
+        boolean result = false;
+        if (directory != null && !directory.isEmpty()) {
+            try {
+                File indexFile = new File(directory, "index.html");
+                if (indexFile.exists()) {
+                    String content = new String(Files.readAllBytes(Paths.get(indexFile.getAbsolutePath())));
+                    result = content.toLowerCase().contains("in stars and time");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return false;
+        mIsInStarsAndTime = result;
+        return result;
     }
 }
