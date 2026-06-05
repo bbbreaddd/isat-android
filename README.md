@@ -36,5 +36,6 @@ Achievements are tracked locally within this Android port. If you import a save 
 
 ## 📜 Credits
 
+- [cafeed28](https://github.com/cafeed28) for creating the port of OMORI that made this port possible
 - **Core Compatibility**: Powered by [nwcompat](https://github.com/bbbreaddd/nwcompat).
 - **Game**: *In Stars and Time* is developed by insertdisc5. Please support the original developer!
